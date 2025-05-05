@@ -1,0 +1,14 @@
+pre-commit:
+  commands:
+    format-fix:server:
+      run: npm run format
+    lint-fix:server:
+      glob: '*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}'
+      run: npx eslint --fix {staged_files}
+      stage_fixed: true
+
+pre-push:
+  commands:
+    lint:server:
+      glob: '*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}'
+      run: npx eslint {push_files}
