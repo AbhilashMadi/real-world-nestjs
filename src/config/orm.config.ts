@@ -1,6 +1,5 @@
-import { join } from 'node:path';
+import { join } from 'path';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { TagEntity } from '~/tag/tag.entity';
 
 export const typeOrmConfig: DataSourceOptions = {
   type: 'postgres',
@@ -9,9 +8,19 @@ export const typeOrmConfig: DataSourceOptions = {
   username: 'mediumclone',
   password: 'admin',
   database: 'mediumclone',
-  entities: [join(__dirname, '**', '*.entity.{ts,js}'), TagEntity],
   synchronize: false,
-  migrations: [join(__dirname, 'migrations', '**', '*{.ts,.js}')],
+  entities: [join(__dirname, '..', '**', '*.entity.{ts,js}')],
+  migrations: [join(__dirname, '..', 'migrations', '*{.ts,.js}')],
+  migrationsTableName: 'migrations',
 };
 
-export default new DataSource(typeOrmConfig);
+const PostgresDataSource = new DataSource(typeOrmConfig);
+PostgresDataSource.initialize()
+  .then(() => {
+    console.log('Data Source has been initialized!');
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization', err);
+  });
+
+export default PostgresDataSource;
