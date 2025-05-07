@@ -25,6 +25,7 @@
     "db:seed": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --dataSource=src/ormseedconfig.ts migration:run"
   },
   "dependencies": {
+    "@fastify/express": "^4.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",

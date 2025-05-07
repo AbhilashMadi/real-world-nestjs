@@ -1,19 +1,15 @@
-import {
-  Body,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Post,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { sign } from 'jsonwebtoken';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { sign } from 'jsonwebtoken';
+import { Repository } from 'typeorm';
+
+import { instanceToPlain } from 'class-transformer';
+import { IUserResponse } from '~/types/user-response.interface';
+import { UserEntity } from '~/user/user.entity';
 
 import CreateuserDto from '~/user/dto/create-user.dto';
-import { UserEntity } from '~/user/user.entity';
-import { IUserResponse } from '~/types/user-response.interface';
-import LoginUserDto from './dto/login-user.dto';
+import LoginUserDto from '~/user/dto/login-user.dto';
 
 @Injectable()
 export class UserService {
@@ -65,6 +61,10 @@ export class UserService {
     return userByEmail;
   }
 
+  async findUserById(id: number): Promise<UserEntity | null> {
+    return await this.userRepository.findOneBy({ id });
+  }
+
   generateJwtToken(user: UserEntity): string {
     const secret = this.configService.get<string>('JWT_SECRET')!;
     return sign(
@@ -79,7 +79,7 @@ export class UserService {
   }
 
   buildResponse(user: UserEntity): IUserResponse {
-    const { password, ...rest } = user;
-    return { user: { ...rest, token: this.generateJwtToken(user) } };
+    const planeUser = instanceToPlain(user) as UserEntity;
+    return { user: { ...planeUser, token: this.generateJwtToken(user) } };
   }
 }
