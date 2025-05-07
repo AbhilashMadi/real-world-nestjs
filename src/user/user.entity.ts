@@ -1,4 +1,4 @@
-import { genSalt, hash } from 'bcryptjs';
+import { compare, genSalt, hash } from 'bcryptjs';
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'users' })
@@ -25,5 +25,9 @@ export class UserEntity {
   private async hashPassword() {
     const salt = await genSalt(10);
     this.password = await hash(this.password, salt);
+  }
+
+  async comparePassword(candidatePassword: string): Promise<boolean> {
+    return compare(candidatePassword, this.password);
   }
 }
