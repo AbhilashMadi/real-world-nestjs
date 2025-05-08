@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Matches, Max, Min } from 'class-validator';
+import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 import RegexPatterns from '~/utils/regex';
 
 export default class CreateUserDto {

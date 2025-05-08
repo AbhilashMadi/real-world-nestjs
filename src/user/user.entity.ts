@@ -13,10 +13,10 @@ export class UserEntity {
   @Column()
   username: string;
 
-  @Column({ default: '' })
+  @Column()
   bio: string;
 
-  @Column({ default: '' })
+  @Column()
   image: string;
 
   @Exclude()

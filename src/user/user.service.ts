@@ -10,6 +10,7 @@ import { UserEntity } from '~/user/user.entity';
 
 import CreateuserDto from '~/user/dto/create-user.dto';
 import LoginUserDto from '~/user/dto/login-user.dto';
+import UpdateUserDto from '~/user/dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -63,6 +64,16 @@ export class UserService {
 
   async findUserById(id: number): Promise<UserEntity | null> {
     return await this.userRepository.findOneBy({ id });
+  }
+
+  async updateUserById(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
+    const user = (await this.findUserById(id))!;
+
+    Object.assign(user, updateUserDto);
+    return await this.userRepository.save(user);
   }
 
   generateJwtToken(user: UserEntity): string {
