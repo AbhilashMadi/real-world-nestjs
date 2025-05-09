@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -7,6 +11,7 @@ import { TagEntity } from '~/tag/tag.entity';
 import { UserEntity } from '~/user/user.entity';
 import NewArticleDto from '~/article/dto/new-article.dto';
 import IArticleResponse from '~/types/article-response.interface';
+import UpdateArticleDto from './dto/update-article.dto';
 
 @Injectable()
 export class ArticleService {
@@ -72,7 +77,27 @@ export class ArticleService {
     return await this.articleRepository.remove(article);
   }
 
-  async updateArticle() {}
+  async updateArticle(
+    slug: string,
+    dto: UpdateArticleDto,
+    user: UserEntity,
+  ): Promise<ArticleEntity> {
+    const article = await this.articleRepository.findOne({
+      where: { slug },
+      relations: ['author'],
+    });
+
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+
+    if (article.author.id !== user.id) {
+      throw new ForbiddenException('You are not the author of this article');
+    }
+
+    Object.assign(article, dto);
+    return await this.articleRepository.save(article);
+  }
 
   buildResponse(article: ArticleEntity): IArticleResponse {
     return {
