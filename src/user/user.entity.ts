@@ -1,6 +1,13 @@
 import { compare, genSalt, hash } from 'bcryptjs';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { ArticleEntity } from '~/article/article.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -13,15 +20,18 @@ export class UserEntity {
   @Column()
   username: string;
 
-  @Column()
+  @Column({ default: '' })
   bio: string;
 
-  @Column()
+  @Column({ default: '' })
   image: string;
 
   @Exclude()
   @Column()
   password: string;
+
+  @OneToMany(() => ArticleEntity, (article) => article.author)
+  articles: ArticleEntity[];
 
   @BeforeInsert()
   private async hashPassword() {

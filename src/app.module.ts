@@ -8,6 +8,7 @@ import { TagModule } from '~/tag/tag.module';
 import { typeOrmConfig } from '~/config/orm.config';
 import { UserModule } from '~/user/user.module';
 import { AuthMiddleware } from '~/user/auth.middleware';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthMiddleware } from '~/user/auth.middleware';
     TypeOrmModule.forRoot(typeOrmConfig),
     TagModule,
     UserModule,
+    ArticleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
